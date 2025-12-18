@@ -4,12 +4,13 @@
 We are using GalaxyML dataset which is available in Zenodo: https://zenodo.org/records/13878122. We have used the 64x64 size images. The scripts assume that the data `(*.hdf5)` files are downloaded in a directory named ```Data/```. If your data is located in a different location please change the file paths in `prepare_data.py` accordingly. The ```prepare_data()``` function in this script prepares image data and other four features, `r_cmodel_mag`, `r_ellipticity`,  `specz_mag_i`, `r_peak_surface _brightness`, to be used as inputs, and targets, `specz_redshift` + `r_sersic index` + `r_half-light radius`.
 
 ## Supervised Learning
-For supervised learning two kinds of architectures are used: ```ResNetRegression()``` (based on convolutional neural network) and ```ViTRegression()``` (based on transformer). The codes for these architectures are included in ```supervised_module.py```. The same script also contains a class ```Supervised()``` for training the mentioned architectures in a supervised manner using ```MSELoss``` of ```PyTorch```. 
+For supervised learning two kinds of architectures are used: ```ResNetRegression()``` (based on convolutional neural network) and ```ViTRegression()``` (based on transformer). The codes for these architectures are included in ```supervised_module.py```. The same script also contains a class ```Supervised()``` for training the mentioned architectures in a supervised manner using ```MSELoss()``` of ```PyTorch```. 
 
 The models can be trained by running the `supervised_training.py` script. Various hyperparameters and number of epochs to be trained can be specified and also which model to choose can be specified in this script. 
 
 ```
 model_1 = ResNetRegression(input_channels=5, emb_size=32, aux_features=4, out_dim=3)
+
 model_2 = ViTRegression(input_channels=5, emb_size=32, aux_features=4, out_dim=3)
 
 ```
@@ -17,12 +18,8 @@ model_2 = ViTRegression(input_channels=5, emb_size=32, aux_features=4, out_dim=3
 There are also options to save the models and sync to wandb.
 
 ```
-
-
 supervised = Supervised(model=model, optimizer=optimizer, scheduler=scheduler, args=args)
 
-    
-    
 supervised.train(train_loader, val_loader, save_model=True, folder = 'path/to/folder', wandb_=True, key='wandb_key', name='wandb_project_name')
 
 ```
