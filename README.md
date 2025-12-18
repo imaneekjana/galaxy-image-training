@@ -6,7 +6,15 @@ We are using GalaxyML dataset which is available in Zenodo: https://zenodo.org/r
 ## Supervised Learning
 For supervised learning two kinds of architectures are used: ```ResNetRegression()``` (based on convolutional neural network) and ```ViTRegression()``` (based on transformer). The codes for these architectures are included in ```supervised_module.py```. The same script also contains a class ```Supervised()``` for training the mentioned architectures in a supervised manner using ```MSELoss``` of ```PyTorch```. 
 
-The models can be trained by running the `supervised_training.py` script. Various hyperparameters and number of epochs to be trained can be specified and also which model to choose can be specified in this script. There are also options to save the models and sync to wandb.
+The models can be trained by running the `supervised_training.py` script. Various hyperparameters and number of epochs to be trained can be specified and also which model to choose can be specified in this script. 
+
+```
+model_1 = ResNetRegression(input_channels=5, emb_size=32, aux_features=4, out_dim=3)
+model_2 = ViTRegression(input_channels=5, emb_size=32, aux_features=4, out_dim=3)
+
+```
+
+There are also options to save the models and sync to wandb.
 
 ```
 
