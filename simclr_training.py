@@ -20,7 +20,7 @@ from prepare_data import *
 # Prepare the data
 train_, val_, test_, scaler, target_scaler = prepare_data()
 
-train_ = (images_train, features_scaled_train, targets_scaled_train)
+(images_train, features_scaled_train, targets_scaled_train) = train_
 #val_ = (images_val, features_scaled_val, targets_scaled_val)
 #test_ = (images_test, features_scaled_test, targets_scaled_test)
 

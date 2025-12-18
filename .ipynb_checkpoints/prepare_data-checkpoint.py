@@ -21,9 +21,9 @@ from simclr_module import *
 def prepare_data():
     ## Load the data and normalize it
 
-    f_train = h5py.File("5x64x64_training_with_morphology.hdf5", "r")
-    f_val = h5py.File("5x64x64_validation_with_morphology.hdf5", "r")
-    f_test = h5py.File("5x64x64_testing_with_morphology.hdf5", "r")
+    f_train = h5py.File("Data/5x64x64_training_with_morphology.hdf5", "r")
+    f_val = h5py.File("Data/5x64x64_validation_with_morphology.hdf5", "r")
+    f_test = h5py.File("Data/5x64x64_testing_with_morphology.hdf5", "r")
 
 
 

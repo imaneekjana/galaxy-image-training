@@ -10,6 +10,8 @@ from torch.utils.data import Dataset, DataLoader, random_split
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+from livelossplot import PlotLosses
+from tqdm import tqdm
 
 
 
@@ -107,6 +109,8 @@ class ResNetRegression(nn.Module):
     def __init__(self, input_channels=5, emb_size=32, aux_features=4 ,out_dim=3):
         super(ResNetRegression, self).__init__()
 
+        feat_dim = emb_size
+
         self.backbone = ResNet(BasicBlock, [2, 2, 2, 2], feat_dim=feat_dim, num_classes=feat_dim, input_channels=input_channels)
 
         
@@ -131,7 +135,7 @@ class ResNetRegression(nn.Module):
 class PatchEmbedding(nn.Module):
     def __init__(self, input_channels=5, patch_size=8, emb_size=32, img_size=64):
         super().__init__()
-        self.proj = nn.Conv2d(in_channels, emb_size, kernel_size=patch_size, stride=patch_size)
+        self.proj = nn.Conv2d(input_channels, emb_size, kernel_size=patch_size, stride=patch_size)
         self.num_patches = (img_size // patch_size) ** 2
 
     def forward(self, x):
@@ -222,7 +226,7 @@ class Supervised(object):
             self.model.train()
             train_loss = 0
             for imgs, feats, targs in train_loader:
-                imgs, feats, targs = imgs.to(self.args.device), feats.to(self.args.device), targs.to(self.args.(device)
+                imgs, feats, targs = imgs.to(self.args.device), feats.to(self.args.device), targs.to(self.args.device)
                 self.optimizer.zero_grad()
                 preds = self.model(imgs, feats)
                 loss = self.criterion(preds, targs)
@@ -241,8 +245,8 @@ class Supervised(object):
                     val_loss += self.criterion(preds, targs).item() * imgs.size(0)
             val_loss /= len(val_loader.dataset)
 
-           # LiveLossPlot logging
-           liveloss.update({
+            # LiveLossPlot logging
+            liveloss.update({
                'loss_train': train_loss,
                'loss_val': val_loss
             })
@@ -260,12 +264,19 @@ class Supervised(object):
                     #wandb.save(save_path)
          
 
-            print(f"Epoch {epoch+1}/{epochs}: Train Loss={train_loss:.4f}, Val Loss={val_loss:.4f}")
+            print(f"Epoch {epoch+1}/{self.args.epochs}: Train Loss={train_loss:.4f}, Val Loss={val_loss:.4f}")
+
+        if save_model ==True:
+            save_path = folder+f"supervised_model_final.pth"
+            torch.save(self.model.state_dict(), save_path)
+            print(f"Model saved to {save_path}")
+            
+        if wandb_ == True:
+            #wandb.save(save_path)
+            wandb.finish()
         
 
-        save_path = folder+f"supervised_model_final.pth"
-        torch.save(self.model.state_dict(), save_path)
-        print(f"Model saved to {save_path}")
+        
 
     
 

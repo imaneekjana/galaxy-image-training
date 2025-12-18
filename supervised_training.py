@@ -20,7 +20,10 @@ from prepare_data import *
 # Prepare the data
 train_, val_, test_, scaler, target_scaler = prepare_data()
 
-train_ = (images_train, features_scaled_train, targets_scaled_train)
+print('prepared data!')
+
+(images_train, features_scaled_train, targets_scaled_train) = train_
+ 
 #val_ = (images_val, features_scaled_val, targets_scaled_val)
 #test_ = (images_test, features_scaled_test, targets_scaled_test)
 
@@ -56,7 +59,7 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last 
 val_loader = DataLoader(val_dataset, batch_size=32, drop_last = True)
 test_loader = DataLoader(test_dataset, batch_size=32, drop_last = True)
 
-
+print('prepared datasets!')
 
 ## Train the Supervised model!!
 
@@ -87,7 +90,7 @@ parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
 parser.add_argument('-j', '--workers', default=12, type=int, metavar='N',
                     help='number of data loading workers (default: 32)')
 
-parser.add_argument('--epochs', default=60, type=int, metavar='N',
+parser.add_argument('--epochs', default=2, type=int, metavar='N',
                     help='number of total epochs to run')
 
 
@@ -146,8 +149,8 @@ else:
     args.gpu_index = -1
 
 
-model = ResNetRegression(input_channels=5, emb_size=args.emb_size, aux_features=4, out_dim=args.out_dim)
-#model = ViTRegression(input_channels=5, emb_size=args.emb_size, aux_features=4, out_dim=args.out_dim)
+#model = ResNetRegression(input_channels=5, emb_size=args.emb_size, aux_features=4, out_dim=args.out_dim)
+model = ViTRegression(input_channels=5, emb_size=args.emb_size, aux_features=4, out_dim=args.out_dim)
 
 
 # Move to GPU if available
@@ -164,8 +167,13 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=len(trai
 with torch.cuda.device(args.gpu_index):
     
     supervised = Supervised(model=model, optimizer=optimizer, scheduler=scheduler, args=args)
+
     
-    supervised.train(train_loader, val_loader, save_model=True, folder = '', wandb_=False)
+    
+    supervised.train(train_loader, val_loader, save_model=False, folder = '', wandb_=False)
+    
+
+    print("done")
     
 
 

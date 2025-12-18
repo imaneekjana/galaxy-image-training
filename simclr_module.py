@@ -271,11 +271,15 @@ class SimCLR(object):
                     torch.save(self.model.state_dict(), save_path)
                     print(f"Model saved to {save_path}")
                     #wandb.save(save_path)
+
+                    
+        if save_model ==True:
+            save_path = folder+f"simclr_model_final.pth"
+            torch.save(self.model.state_dict(), save_path)
+            print(f"Model saved to {save_path}")
                
 
-        save_path = folder+f"simclr_model_final.pth"
-        torch.save(self.model.state_dict(), save_path)
-        print(f"Model saved to {save_path}")
+        
 
         if wandb_ == True:
             wandb.save(save_path)
