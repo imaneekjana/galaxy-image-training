@@ -27,7 +27,7 @@ weights = torch.load(encoder_path, map_location='cpu')
 
 # Create the architecture
 
-encoder = ResNetSimCLR(input_channels=5, feat_dim=32, out_dim=10)
+encoder = ResNetSimCLR(input_channels=5, feat_dim=32, out_dim=16)
 
 encoder.load_state_dict(weights)
 
