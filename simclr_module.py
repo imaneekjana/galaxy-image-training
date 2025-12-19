@@ -286,7 +286,86 @@ class SimCLR(object):
             wandb.finish()
 
         
+
+def train_regressor(regressor, encoder, train_loader, val_loader, epochs=50, save_model = False, file_path = 'regressor.pth'):
+
+
+    criterion = nn.MSELoss()  # multi-task regression
+
+    optimizer = optim.Adam(regressor.parameters(), lr=1e-3)
+
+    liveloss = PlotLosses()
+
+    regressor.train()
+
+    train_epochs = epochs
+
+    for epoch in tqdm(range(train_epochs)):
+
+        train_loss = 0
+        val_loss = 0
+
+        for images, features, targets in train_loader:
+
+            images = images.to(device)
+            features_aux = features.to(device)
+            targets = targets.to(device)
         
+            with torch.no_grad():
+                feats = encoder(images)
+            
+            x_embed = torch.cat([features_aux, feats], dim=1)
+
+            preds = regressor(x_embed).squeeze()
+
+            loss = criterion(preds, targets)
+
+            optimizer.zero_grad()
+        
+            loss.backward()
+        
+            optimizer.step()
+
+            train_loss += loss.item()*images.size(0)
+        
+        train_loss = train_loss/len(train_loader.dataset)
+
+    
+        for images, features, targets in val_loader:
+
+            images = images.to(device)
+            features_aux = features.to(device)
+            targets = targets.to(device)
+        
+            with torch.no_grad():
+                feats = encoder(images)
+            
+            x_embed = torch.cat([features_aux, feats], dim=1)
+
+            preds = regressor(x_embed).squeeze()
+
+            loss = criterion(preds, targets)
+
+            val_loss += loss.item()*images.size(0)
+
+        val_loss = val_loss/len(val_loader.dataset)
+
+        liveloss.update({
+                'loss_train': train_loss,
+                'loss_val': val_loss
+             })
+        liveloss.send()
+
+    if save_model == True:
+        
+        torch.save(regressor.state_dict(), file_path)
+
+    
+
+    return regressor
+
+    
+               
         
             
        

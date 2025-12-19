@@ -101,7 +101,7 @@ class GalaxyDataset(torch.utils.data.Dataset):
 
         if self.augment:
             xi, xj = self.augment(img)
-            return xi, xj, img, feature, target
+            return xi, xj, img, (feature, target)
         else:
             return img, feature, target
 
